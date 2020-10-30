@@ -25,6 +25,9 @@
 #
 ### Code:
 
+# FiniteDifferences is used to calculate numerical derivatives in "@uncertain" macro.
+using FiniteDifferences
+
 export @uncertain
 
 # This function is to be used by methods of mathematical operations to produce a
@@ -147,14 +150,14 @@ according to rules of linear error propagation theory.
 
 Function `f` can accept any number of real arguments.
 """
-macro uncertain(expr::Expr)
+macro uncertain(expr::Expr, p::Int=4)
     f = esc(expr.args[1]) # Function name
     n = length(expr.args) - 1
     if n == 1
         a = esc(expr.args[2]) # Argument, of Measurement type
         return quote
             let x = measurement($a)
-                result($f(x.val), Calculus.derivative($f, x.val), x)
+                result($f(x.val), FiniteDifferences.central_fdm($(esc(p)), 1)($f, x.val), x)
             end
         end
     else
@@ -164,7 +167,8 @@ macro uncertain(expr::Expr)
         argsval =:([])  # Build up the array of values of arguments
         [push!(argsval.args, :($(args.args[i]).val)) for i=1:n] # Fill the array
         return :( result($f($argsval...),
-                         Calculus.gradient(x -> $f(x...), $argsval),
+                         FiniteDifferences.grad(FiniteDifferences.central_fdm($(esc(p)), 1),
+                                                x -> $f(x...), $argsval)[1],
                          $args) )
     end
 end

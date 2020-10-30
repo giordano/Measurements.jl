@@ -1,4 +1,4 @@
-using Measurements, SpecialFunctions, QuadGK, Calculus
+using Measurements, SpecialFunctions, QuadGK, FiniteDifferences
 using Test, LinearAlgebra, Statistics, Unitful, Printf
 
 import Base: isapprox
@@ -315,7 +315,7 @@ end
         end
     end
     for c in (-1 ± 1, 0 ± 1, 1 ± 1)
-        @test sinc(c) ≈ @uncertain(sinc(c)) rtol = 1e-7
+        @test sinc(c) ≈ @uncertain(sinc(c)) atol = 1e-7
         @test cosc(c) ≈ @uncertain(cosc(c)) rtol = 1e-7
         @test Measurements.value(sinc(c) ^ 2 + cosc(c) ^ 2) == 1
     end
@@ -812,16 +812,16 @@ end
     @test QuadGK.quadgk(cos, x, y)[1] ≈
         @uncertain(((x,y) -> QuadGK.quadgk(cos, x, y)[1])(x, y))
     @test QuadGK.quadgk(sin, -y, y)[1] ≈
-        @uncertain((x -> QuadGK.quadgk(sin, -x, x)[1])(y)) atol = 1e-10
+        @uncertain((x -> QuadGK.quadgk(sin, -x, x)[1])(y)) atol = 1.5e-10
     @test QuadGK.quadgk(exp, 0.4, x)[1] ≈
         @uncertain((x -> QuadGK.quadgk(exp, 0.4, x)[1])(x))
 end
 
-@testset "Calculus" begin
+@testset "FiniteDifferences" begin
     for a in (w, x, y)
-        @test Calculus.derivative(exp, a + w) ≈ exp(a + w)
-        @test Calculus.derivative(t -> sin(t * x), a) ≈  x * cos(a * x)
-        @test Calculus.derivative(t -> y * cos(t), a) ≈ -y * sin(a)
+        @test FiniteDifferences.central_fdm(5, 1)(exp, a + w) ≈ exp(a + w)
+        @test FiniteDifferences.central_fdm(5, 1)(t -> sin(t * x), a) ≈  x * cos(a * x)
+        @test FiniteDifferences.central_fdm(5, 1)(t -> y * cos(t), a) ≈ -y * sin(a)
     end
 end
 
