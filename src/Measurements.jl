@@ -21,9 +21,6 @@ __precompile__()
 
 module Measurements
 
-# Calculus is used to calculate numerical derivatives in "@uncertain" macro.
-using Calculus
-
 using Requires
 
 # Functions provided by this package and exposed to users

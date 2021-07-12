@@ -1,8 +1,8 @@
 [deps]
 AutoGrad = "6710c13c-97f1-543f-91c5-74e8f7d95b35"
-Calculus = "49dc2e85-a5d0-5ad3-a950-438e2897f1b9"
 Cuba = "8a292aeb-7a57-582c-b821-06e4c11590b1"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+FiniteDifferences = "26cc04aa-876d-5657-8c51-4c34ba976000"
 QuadGK = "1fd47b50-473d-5c70-9696-f719f8f3bcdc"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
